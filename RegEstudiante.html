@@ -1,0 +1,104 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script>
+        window.onload = function () 
+        {
+            var localStorageKeyName = 'data';
+            loadFromLocalStorage();
+            document.querySelector("#guardar").addEventListener('click', 
+            function () 
+            {
+                var nombre = document.getElementById("nombre"),  
+                matricula = document.getElementById("matricula"),  
+                identificacion = document.getElementById("identificacion");
+
+                // validar 
+                if (nombre.value.length === 0 || matricula.value.length === 0 || !parseInt(identificacion.value)) return;
+                var user =   {  nombre: nombre.value, matricula: matricula.value, identificacion: identificacion.value };
+                
+                // limpiar variablr
+                nombre.value = '';       
+                matricula.value = '';                
+                identificacion.value = '';
+
+                // insertar en el localStorage
+                appendObjectToLocalStorage(user);
+            })
+
+            function appendObjectToLocalStorage(obj) 
+            {
+                var users = [], dataInLocalStorage = localStorage.getItem(localStorageKeyName);
+                if (dataInLocalStorage !== null) 
+                {   
+                    users = JSON.parse(dataInLocalStorage);   
+                }
+                users.push(obj);
+                localStorage.setItem(localStorageKeyName, JSON.stringify(users));
+                loadFromLocalStorage();
+            }
+
+            function loadFromLocalStorage() 
+            {
+                var users = [], dataInLocalStorage = localStorage.getItem(localStorageKeyName), gridBody = document.querySelector("#grid tbody");
+
+                if (dataInLocalStorage !== null) 
+                {
+                    users = JSON.parse(dataInLocalStorage);
+                }                
+                gridBody.innerHTML = '';                
+                users.forEach(function (x, i) 
+                {
+                    var tr = document.createElement("tr"),    
+                    tdnombre = document.createElement("td"),    
+                    tdmatricula = document.createElement("td"),
+                    tdidentificacion = document.createElement("td");                                        
+                    tdnombre.innerHTML = x.nombre;
+                    tdmatricula.innerHTML = x.matricula;
+                    tdidentificacion.innerHTML = x.identificacion;                   
+                    tr.appendChild(tdnombre);
+                    tr.appendChild(tdmatricula);
+                    tr.appendChild(tdidentificacion);  
+                    gridBody.appendChild(tr);
+                });
+            }           
+        }
+    </script>
+</head>
+<body> 
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+            <h1 class="jumbotron" style="background-color: coral ; text-align-last: center;">INFORMACION ESTUDIANTES</h1>
+                <table id="grid" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Matricula</th>
+                            <th>Identidad</th>
+                            <th style="width:80px;">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <input id="nombre" type="text" class="form-control" />
+                            </th>
+                            <th>
+                                <input id="matricula" type="text" class="form-control" />
+                            </th>
+                            <th>
+                                <input id="identificacion" type="text" class="form-control" />
+                            </th>
+                            <th>
+                                <button id="guardar" class="btn btn-info">Guardar</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
